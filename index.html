@@ -5,14 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>One Night Stranger Things - V Edition</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+  
+  <!-- Stranger Things Benguiat-style font -->
+  <link href="https://fonts.cdnfonts.com/css/itc-benguiat" rel="stylesheet">
+
   <style>
     body {
       background-color: #000;
       color: #ff2a2a;
-      font-family: 'Cinzel Decorative', serif;
+      font-family: 'ITC Benguiat', 'Cinzel Decorative', serif;
       margin: 0;
       overflow: hidden;
+      letter-spacing: 1px;
     }
 
     /* Intro animation styles */
@@ -60,6 +64,7 @@
     nav {
       background: #111;
       border-bottom: 2px solid #ff2a2a;
+      font-family: 'ITC Benguiat', serif;
     }
 
     main.container {
@@ -67,6 +72,7 @@
       padding-top: 2rem;
       text-align: center;
       animation: fadeIn 1s ease forwards;
+      font-family: 'ITC Benguiat', serif;
     }
 
     @keyframes fadeIn {
@@ -74,15 +80,22 @@
       to {opacity: 1;}
     }
 
-    h1, h2 {
-      text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+    h1, h2, h3, p, button, select, footer, small {
+      font-family: 'ITC Benguiat', serif;
+      text-shadow: 0 0 10px #ff0000;
+    }
+
+    h2 {
+      color: #ff2a2a;
       letter-spacing: 2px;
+      text-transform: uppercase;
     }
 
     select, button {
       background: #111;
       color: #ff2a2a;
       border: 1px solid #ff2a2a;
+      text-transform: uppercase;
     }
 
     #narration-box {
@@ -202,7 +215,7 @@
       timerDisplay.innerText = "";
       for (let step of narrationSteps) {
         narrationBox.innerText = step;
-        await new Promise(r => setTimeout(r, 3500)); // Wait between steps
+        await new Promise(r => setTimeout(r, 3500));
       }
       startTimer(300);
     }
