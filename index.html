@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>One Night: Stranger Things</title>
+  <title>One Night Stranger Things - V Edition</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
   <style>
@@ -11,17 +11,67 @@
       background-color: #000;
       color: #ff2a2a;
       font-family: 'Cinzel Decorative', serif;
-      text-align: center;
-      padding: 2rem;
+      margin: 0;
+      overflow: hidden;
     }
 
+    /* Intro animation styles */
+    #intro {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: black;
+      z-index: 999;
+      animation: fadeOut 1s ease 3s forwards;
+    }
+
+    #intro h1 {
+      font-size: 3rem;
+      letter-spacing: 3px;
+      text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #ff0000;
+      animation: zoomFade 3s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes zoomFade {
+      0% {
+        transform: scale(2.5);
+        opacity: 0;
+      }
+      40% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    /* Main content styles */
     nav {
       background: #111;
       border-bottom: 2px solid #ff2a2a;
     }
 
     main.container {
+      display: none;
       padding-top: 2rem;
+      text-align: center;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
     }
 
     h1, h2 {
@@ -59,8 +109,14 @@
 </head>
 
 <body>
+  <!-- Intro animation -->
+  <div id="intro">
+    <h1>ONE NIGHT STRANGER THINGS<br>V EDITION</h1>
+  </div>
+
+  <!-- Main website -->
   <nav class="container-fluid">
-    <ul><li><strong>One Night: Stranger Things</strong></li></ul>
+    <ul><li><strong>One Night Stranger Things - V Edition</strong></li></ul>
     <ul>
       <li><a href="#">Rules</a></li>
       <li><a href="#">Start Game</a></li>
@@ -68,7 +124,7 @@
     </ul>
   </nav>
 
-  <main class="container">
+  <main class="container" id="mainContent">
     <div class="grid">
       <section>
         <hgroup>
@@ -111,6 +167,12 @@
   </footer>
 
   <script>
+    // Wait for intro animation to finish, then show main content
+    setTimeout(() => {
+      document.getElementById("mainContent").style.display = "block";
+      document.body.style.overflow = "auto";
+    }, 4000);
+
     const narrationSteps = [
       "Billy wakes up and looks at one player’s card...",
       "Mind Flayer and Mr.Whatsit wake up and look for Vecna...",
@@ -140,9 +202,7 @@
       timerDisplay.innerText = "";
       for (let step of narrationSteps) {
         narrationBox.innerText = step;
-        speechSynthesis.cancel();
-        speechSynthesis.speak(new SpeechSynthesisUtterance(step));
-        await new Promise(r => setTimeout(r, 4000)); // Wait 4s between steps
+        await new Promise(r => setTimeout(r, 3500)); // Wait between steps
       }
       startTimer(300);
     }
@@ -157,7 +217,6 @@
         if (remaining < 0) {
           clearInterval(interval);
           timerDisplay.innerText = "🕒 Time's up!";
-          speechSynthesis.speak(new SpeechSynthesisUtterance("Time's up!"));
         }
       }, 1000);
     }
