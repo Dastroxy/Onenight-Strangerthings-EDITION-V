@@ -1,115 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>One Night Stranger Things - V Edition</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-  
-  <!-- Stranger Things Benguiat-style font -->
   <link href="https://fonts.cdnfonts.com/css/itc-benguiat" rel="stylesheet">
 
   <style>
+    /* Global styles */
     body {
-      background-color: #000;
-      color: #ff2a2a;
-      font-family: 'ITC Benguiat', 'Cinzel Decorative', serif;
-      margin: 0;
+      background: radial-gradient(circle at center, #2b0000 0%, #000 70%) fixed;
       overflow: hidden;
+      color: #ff1b1b;
+      font-family: 'ITC Benguiat', serif;
       letter-spacing: 1px;
+      margin: 0;
+      text-align: center;
     }
 
-    /* Intro animation styles */
+    /* Animated background "fog" */
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(255,0,0,0.1), transparent 60%),
+                  radial-gradient(circle at 80% 80%, rgba(128,0,128,0.1), transparent 70%);
+      animation: moveFog 15s infinite alternate;
+      z-index: -1;
+    }
+    @keyframes moveFog {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, -50px); }
+    }
+
+    /* Intro animation */
     #intro {
       position: fixed;
       inset: 0;
       display: flex;
-      align-items: center;
       justify-content: center;
-      background: black;
-      z-index: 999;
+      align-items: center;
+      background: #000;
+      z-index: 1000;
       animation: fadeOut 1s ease 3s forwards;
     }
 
     #intro h1 {
-      font-size: 3rem;
+      font-size: 3.5rem;
       letter-spacing: 3px;
-      text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #ff0000;
-      animation: zoomFade 3s ease forwards;
+      color: #ff1b1b;
+      text-shadow: 0 0 10px #ff0000, 0 0 25px #ff0000, 0 0 50px #ff0000;
       opacity: 0;
+      animation: zoomFade 3s ease forwards;
     }
 
     @keyframes zoomFade {
-      0% {
-        transform: scale(2.5);
-        opacity: 0;
-      }
-      40% {
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
+      0% { transform: scale(2.5); opacity: 0; }
+      40% { opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     @keyframes fadeOut {
-      to {
-        opacity: 0;
-        visibility: hidden;
-      }
+      to { opacity: 0; visibility: hidden; }
     }
 
-    /* Main content styles */
+    /* Navigation */
     nav {
-      background: #111;
-      border-bottom: 2px solid #ff2a2a;
-      font-family: 'ITC Benguiat', serif;
+      background: rgba(0, 0, 0, 0.6);
+      border-bottom: 2px solid #ff1b1b;
+      backdrop-filter: blur(4px);
+      text-transform: uppercase;
+      text-shadow: 0 0 8px #ff0000;
     }
 
     main.container {
       display: none;
-      padding-top: 2rem;
-      text-align: center;
+      padding: 2rem;
       animation: fadeIn 1s ease forwards;
-      font-family: 'ITC Benguiat', serif;
     }
-
     @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
-    h1, h2, h3, p, button, select, footer, small {
-      font-family: 'ITC Benguiat', serif;
-      text-shadow: 0 0 10px #ff0000;
-    }
-
-    h2 {
-      color: #ff2a2a;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+    h2, h3 {
+      text-shadow: 0 0 10px #ff0000, 0 0 25px #ff0000;
+      margin-bottom: 0.3em;
     }
 
     select, button {
-      background: #111;
+      background: rgba(0, 0, 0, 0.6);
       color: #ff2a2a;
       border: 1px solid #ff2a2a;
       text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    button:hover, select:hover {
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+      transform: scale(1.02);
     }
 
     #narration-box {
       margin-top: 2rem;
       font-size: 1.2rem;
-      white-space: pre-line;
-      min-height: 120px;
+      min-height: 100px;
+      text-shadow: 0 0 10px #ff0000;
     }
 
     #timer {
       font-size: 2rem;
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       color: #ff5555;
-      text-shadow: 0 0 15px #ff0000;
+      text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+      animation: pulse 2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { opacity: 0.8; }
+      to { opacity: 1; transform: scale(1.05); }
     }
 
     footer {
@@ -117,62 +128,49 @@
       border-top: 1px solid #ff2a2a;
       padding-top: 1rem;
       color: #888;
+      text-shadow: 0 0 5px #ff0000;
     }
   </style>
 </head>
 
 <body>
-  <!-- Intro animation -->
+  <!-- Intro -->
   <div id="intro">
     <h1>ONE NIGHT STRANGER THINGS<br>V EDITION</h1>
   </div>
 
-  <!-- Main website -->
+  <!-- Navigation -->
   <nav class="container-fluid">
-    <ul><li><strong>One Night Stranger Things - V Edition</strong></li></ul>
+    <ul><li><strong>One Night: Stranger Things - V Edition</strong></li></ul>
     <ul>
       <li><a href="#">Rules</a></li>
-      <li><a href="#">Start Game</a></li>
+      <li><a href="#">Start</a></li>
       <li><a href="#" role="button">GitHub</a></li>
     </ul>
   </nav>
 
+  <!-- Main -->
   <main class="container" id="mainContent">
-    <div class="grid">
-      <section>
-        <hgroup>
-          <h2>Choose Roles</h2>
-          <h3>Select the roles for this round</h3>
-        </hgroup>
+    <section>
+      <hgroup>
+        <h2>Choose Roles</h2>
+        <h3>Select the roles for this round</h3>
+      </hgroup>
 
-        <select id="roles" multiple size="8">
-          <option>Will</option>
-          <option>Eleven</option>
-          <option>Mike</option>
-          <option>Dustin</option>
-          <option>Steve</option>
-          <option>Lucas</option>
-          <option>Nancy</option>
-          <option>Jonathan</option>
-          <option>Joyce</option>
-          <option>Hopper</option>
-          <option>Max</option>
-          <option>V</option>
-          <option>Billy</option>
-          <option>Bob</option>
-          <option>Kali</option>
-          <option>Eddie</option>
-          <option>Vecna</option>
-          <option>Mind Flayer</option>
-          <option>Mr. Whatsit</option>
-          <option>Demogorgon</option>
-        </select>
+      <select id="roles" multiple size="8">
+        <option>Will</option><option>Eleven</option><option>Mike</option>
+        <option>Dustin</option><option>Steve</option><option>Lucas</option>
+        <option>Nancy</option><option>Jonathan</option><option>Joyce</option>
+        <option>Hopper</option><option>Max</option><option>V</option>
+        <option>Billy</option><option>Bob</option><option>Kali</option>
+        <option>Eddie</option><option>Vecna</option><option>Mind Flayer</option>
+        <option>Mr. Whatsit</option><option>Demogorgon</option>
+      </select>
 
-        <button id="start-night">Start Night Narration</button>
-        <div id="narration-box"></div>
-        <div id="timer"></div>
-      </section>
-    </div>
+      <button id="start-night">Start Night Narration</button>
+      <div id="narration-box"></div>
+      <div id="timer"></div>
+    </section>
   </main>
 
   <footer class="container">
@@ -180,12 +178,13 @@
   </footer>
 
   <script>
-    // Wait for intro animation to finish, then show main content
+    // Fade in main content after intro
     setTimeout(() => {
       document.getElementById("mainContent").style.display = "block";
       document.body.style.overflow = "auto";
     }, 4000);
 
+    // Narration sequence
     const narrationSteps = [
       "Billy wakes up and looks at one player’s card...",
       "Mind Flayer and Mr.Whatsit wake up and look for Vecna...",
