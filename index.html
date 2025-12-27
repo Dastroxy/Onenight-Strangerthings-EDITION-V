@@ -1,237 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>One Night Stranger Things - V Edition</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-  <link href="https://fonts.cdnfonts.com/css/itc-benguiat" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>One Night Stranger Things - V Edition</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+<link href="https://fonts.cdnfonts.com/css/itc-benguiat" rel="stylesheet">
+<style>
+  body{
+    background:radial-gradient(circle at center,#2b0000 0%,#000 70%) fixed;
+    color:#ff1b1b;font-family:'ITC Benguiat',serif;letter-spacing:1px;
+    margin:0;text-align:center;overflow:hidden;
+  }
+  body::before,body::after{
+    content:"";position:fixed;inset:0;z-index:-1;
+    background:radial-gradient(circle at 20% 20%,rgba(255,0,0,.1),transparent 60%),
+               radial-gradient(circle at 80% 80%,rgba(128,0,128,.1),transparent 70%);
+    animation:moveFog 15s infinite alternate;
+  }
+  @keyframes moveFog{0%{transform:translate(0,0);}100%{transform:translate(50px,-50px);}}
+  #intro{
+    position:fixed;inset:0;display:flex;justify-content:center;align-items:center;
+    background:#000;z-index:1000;animation:fadeOut 1s ease 3s forwards;
+  }
+  #intro h1{
+    font-size:3.5rem;letter-spacing:3px;color:#ff1b1b;
+    text-shadow:0 0 10px #ff0000,0 0 25px #ff0000,0 0 50px #ff0000;
+    opacity:0;animation:zoomFade 3s ease forwards;
+  }
+  @keyframes zoomFade{0%{transform:scale(2.5);opacity:0;}40%{opacity:1;}100%{transform:scale(1);opacity:1;}}
+  @keyframes fadeOut{to{opacity:0;visibility:hidden;}}
+  nav{
+    background:rgba(0,0,0,.6);border-bottom:2px solid #ff1b1b;
+    backdrop-filter:blur(4px);text-shadow:0 0 8px #ff0000;
+  }
+  main.container{display:none;padding:2rem;animation:fadeIn 1s ease forwards;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  h2,h3{text-shadow:0 0 10px #ff0000,0 0 25px #ff0000;}
 
-  <style>
-    /* Global styles */
-    body {
-      background: radial-gradient(circle at center, #2b0000 0%, #000 70%) fixed;
-      overflow: hidden;
-      color: #ff1b1b;
-      font-family: 'ITC Benguiat', serif;
-      letter-spacing: 1px;
-      margin: 0;
-      text-align: center;
-    }
+  /* Player selector */
+  #player-count{margin:1.5rem auto 1rem;display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem;}
+  .player-box{
+    width:55px;height:55px;display:flex;align-items:center;justify-content:center;
+    border:2px solid #ff1b1b;background:rgba(0,0,0,.6);color:#ff1b1b;cursor:pointer;
+    font-size:1.2rem;transition:all .3s ease;box-shadow:0 0 10px rgba(255,0,0,.3);
+  }
+  .player-box:hover{transform:scale(1.1);}
+  .player-box.active{
+    background:#ff1b1b;color:#000;
+    box-shadow:0 0 25px #ff1b1b,0 0 50px #ff0000;border-color:#ff4444;
+  }
+  #role-count-msg{margin:.8rem 0 1.5rem;font-size:1.1rem;color:#ff5555;text-shadow:0 0 8px #ff0000;min-height:1.4rem;}
 
-    /* Animated background "fog" */
-    body::before, body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at 20% 20%, rgba(255,0,0,0.1), transparent 60%),
-                  radial-gradient(circle at 80% 80%, rgba(128,0,128,0.1), transparent 70%);
-      animation: moveFog 15s infinite alternate;
-      z-index: -1;
-    }
-    @keyframes moveFog {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(50px, -50px); }
-    }
+  /* Role grid */
+  #role-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+    gap:1rem;max-width:800px;margin:0 auto;
+  }
+  .role-box{
+    border:2px solid #ff1b1b;background:rgba(0,0,0,.6);color:#ff1b1b;
+    padding:1rem;border-radius:6px;cursor:pointer;transition:all .3s ease;
+    box-shadow:0 0 15px rgba(255,0,0,.3);
+    text-transform:uppercase;font-size:.95rem;
+  }
+  .role-box:hover{transform:scale(1.05);}
+  .role-box.active{
+    background:#ff1b1b;color:#000;
+    box-shadow:0 0 25px #ff1b1b,0 0 50px #ff0000;
+  }
+  .role-box.disabled{opacity:.3;pointer-events:none;}
 
-    /* Intro animation */
-    #intro {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #000;
-      z-index: 1000;
-      animation: fadeOut 1s ease 3s forwards;
-    }
+  #selection-status{margin-top:1rem;font-size:1rem;color:#ff5555;text-shadow:0 0 5px #ff0000;}
 
-    #intro h1 {
-      font-size: 3.5rem;
-      letter-spacing: 3px;
-      color: #ff1b1b;
-      text-shadow: 0 0 10px #ff0000, 0 0 25px #ff0000, 0 0 50px #ff0000;
-      opacity: 0;
-      animation: zoomFade 3s ease forwards;
-    }
+  button{
+    background:rgba(0,0,0,.6);color:#ff2a2a;border:1px solid #ff2a2a;
+    text-transform:uppercase;box-shadow:0 0 10px rgba(255,0,0,.4);
+    transition:all .3s ease;margin-top:1.5rem;
+  }
+  button:hover{box-shadow:0 0 20px rgba(255,0,0,.8);transform:scale(1.02);}
 
-    @keyframes zoomFade {
-      0% { transform: scale(2.5); opacity: 0; }
-      40% { opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes fadeOut {
-      to { opacity: 0; visibility: hidden; }
-    }
-
-    /* Navigation */
-    nav {
-      background: rgba(0, 0, 0, 0.6);
-      border-bottom: 2px solid #ff1b1b;
-      backdrop-filter: blur(4px);
-      text-transform: uppercase;
-      text-shadow: 0 0 8px #ff0000;
-    }
-
-    main.container {
-      display: none;
-      padding: 2rem;
-      animation: fadeIn 1s ease forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    h2, h3 {
-      text-shadow: 0 0 10px #ff0000, 0 0 25px #ff0000;
-      margin-bottom: 0.3em;
-    }
-
-    select, button {
-      background: rgba(0, 0, 0, 0.6);
-      color: #ff2a2a;
-      border: 1px solid #ff2a2a;
-      text-transform: uppercase;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
-      transition: all 0.3s ease;
-    }
-
-    button:hover, select:hover {
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
-      transform: scale(1.02);
-    }
-
-    #narration-box {
-      margin-top: 2rem;
-      font-size: 1.2rem;
-      min-height: 100px;
-      text-shadow: 0 0 10px #ff0000;
-    }
-
-    #timer {
-      font-size: 2rem;
-      margin-top: 1.5rem;
-      color: #ff5555;
-      text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
-      animation: pulse 2s infinite alternate;
-    }
-
-    @keyframes pulse {
-      from { opacity: 0.8; }
-      to { opacity: 1; transform: scale(1.05); }
-    }
-
-    footer {
-      margin-top: 3rem;
-      border-top: 1px solid #ff2a2a;
-      padding-top: 1rem;
-      color: #888;
-      text-shadow: 0 0 5px #ff0000;
-    }
-  </style>
+  #narration-box{margin-top:2rem;font-size:1.2rem;min-height:100px;text-shadow:0 0 10px #ff0000;}
+  #timer{
+    font-size:2rem;margin-top:1.5rem;color:#ff5555;
+    text-shadow:0 0 20px #ff0000,0 0 40px #ff0000;animation:pulse 2s infinite alternate;
+  }
+  @keyframes pulse{from{opacity:.8;}to{opacity:1;transform:scale(1.05);}}
+  footer{margin-top:3rem;border-top:1px solid #ff2a2a;padding-top:1rem;color:#888;text-shadow:0 0 5px #ff0000;}
+</style>
 </head>
 
 <body>
-  <!-- Intro -->
-  <div id="intro">
-    <h1>ONE NIGHT STRANGER THINGS<br>V EDITION</h1>
-  </div>
+<div id="intro"><h1>ONE NIGHT STRANGER THINGS<br>V EDITION</h1></div>
 
-  <!-- Navigation -->
-  <nav class="container-fluid">
-    <ul><li><strong>One Night: Stranger Things - V Edition</strong></li></ul>
-    <ul>
-      <li><a href="#">Rules</a></li>
-      <li><a href="#">Start</a></li>
-      <li><a href="#" role="button">GitHub</a></li>
-    </ul>
-  </nav>
+<nav class="container-fluid">
+  <ul><li><strong>One Night: Stranger Things - V Edition</strong></li></ul>
+  <ul>
+    <li><a href="#">Rules</a></li>
+    <li><a href="#">Start</a></li>
+    <li><a href="#" role="button">GitHub</a></li>
+  </ul>
+</nav>
 
-  <!-- Main -->
-  <main class="container" id="mainContent">
-    <section>
-      <hgroup>
-        <h2>Choose Roles</h2>
-        <h3>Select the roles for this round</h3>
-      </hgroup>
+<main class="container" id="mainContent">
+  <section>
+    <hgroup>
+      <h2>Select Number of Players</h2>
+      <h3>(Minimum 3 — Maximum 12)</h3>
+    </hgroup>
 
-      <select id="roles" multiple size="8">
-        <option>Will</option><option>Eleven</option><option>Mike</option>
-        <option>Dustin</option><option>Steve</option><option>Lucas</option>
-        <option>Nancy</option><option>Jonathan</option><option>Joyce</option>
-        <option>Hopper</option><option>Max</option><option>V</option>
-        <option>Billy</option><option>Bob</option><option>Kali</option>
-        <option>Eddie</option><option>Vecna</option><option>Mind Flayer</option>
-        <option>Mr. Whatsit</option><option>Demogorgon</option>
-      </select>
+    <div id="player-count"></div>
+    <div id="role-count-msg"></div>
 
-      <button id="start-night">Start Night Narration</button>
-      <div id="narration-box"></div>
-      <div id="timer"></div>
-    </section>
-  </main>
+    <div id="role-grid"></div>
+    <div id="selection-status"></div>
 
-  <footer class="container">
-    <small><a href="#">Created by You</a> • <a href="#">Inspired by Stranger Things</a></small>
-  </footer>
+    <button id="start-night" style="display:none;">Start Night Narration</button>
+    <div id="narration-box"></div>
+    <div id="timer"></div>
+  </section>
+</main>
 
-  <script>
-    // Fade in main content after intro
-    setTimeout(() => {
-      document.getElementById("mainContent").style.display = "block";
-      document.body.style.overflow = "auto";
-    }, 4000);
+<footer class="container">
+  <small><a href="#">Created by You</a> • <a href="#">Inspired by Stranger Things</a></small>
+</footer>
 
-    // Narration sequence
-    const narrationSteps = [
-      "Billy wakes up and looks at one player’s card...",
-      "Mind Flayer and Mr.Whatsit wake up and look for Vecna...",
-      "Vecna wakes up. All players extend hands. Vecna taps one hand.",
-      "V extends her hand. Vecna and Mind Flayer wake up.",
-      "Demogorgon wakes up. Vecna and Mind Flayer stick their thumbs out.",
-      "Eleven wakes up. Eleven taps one hand.",
-      "Mike wakes up. Eleven puts her thumb up.",
-      "Nancy and Jonathan wake up and look at each other.",
-      "Will wakes up and performs his chosen action.",
-      "Hopper wakes up and reveals one player’s card.",
-      "Dustin wakes up and flips one center card face-up.",
-      "Max wakes up and switches two players’ cards.",
-      "Steve wakes up and swaps with another player.",
-      "Joyce wakes up and checks her own card.",
-      "Everyone wakes up. The night is over!"
-    ];
+<script>
+/* Reveal main after intro */
+setTimeout(()=>{document.getElementById("mainContent").style.display="block";
+document.body.style.overflow="auto";},4000);
 
-    const narrationBox = document.getElementById('narration-box');
-    const timerDisplay = document.getElementById('timer');
-    const startButton = document.getElementById('start-night');
+/* Build player boxes */
+const playerContainer=document.getElementById("player-count");
+for(let i=3;i<=12;i++){
+  const box=document.createElement("div");
+  box.className="player-box";box.dataset.num=i;box.textContent=i;
+  playerContainer.appendChild(box);
+}
 
-    startButton.addEventListener('click', startNarration);
+/* Role list */
+const roles=[
+  "Will","Eleven","Mike","Dustin","Steve","Lucas","Nancy","Jonathan",
+  "Joyce","Hopper","Max","V","Billy","Bob","Kali","Eddie",
+  "Vecna","Mind Flayer","Mr. Whatsit","Demogorgon"
+];
+const roleGrid=document.getElementById("role-grid");
+roles.forEach(r=>{
+  const div=document.createElement("div");
+  div.className="role-box";div.textContent=r;
+  roleGrid.appendChild(div);
+});
 
-    async function startNarration() {
-      narrationBox.innerText = "";
-      timerDisplay.innerText = "";
-      for (let step of narrationSteps) {
-        narrationBox.innerText = step;
-        await new Promise(r => setTimeout(r, 3500));
+let playerCount=0,roleLimit=0,selectedRoles=[];
+
+const boxes=document.querySelectorAll(".player-box");
+const roleBoxes=document.querySelectorAll(".role-box");
+const msg=document.getElementById("role-count-msg");
+const status=document.getElementById("selection-status");
+const startBtn=document.getElementById("start-night");
+
+boxes.forEach(b=>{
+  b.addEventListener("click",()=>{
+    boxes.forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    playerCount=parseInt(b.dataset.num);
+    roleLimit=playerCount+3;
+    selectedRoles=[];
+    msg.textContent=`You can select ${roleLimit} roles.`;
+    status.textContent="";
+    startBtn.style.display="none";
+    roleBoxes.forEach(r=>r.classList.remove("active","disabled"));
+  });
+});
+
+/* Role selection logic */
+roleBoxes.forEach(box=>{
+  box.addEventListener("click",()=>{
+    if(box.classList.contains("active")){
+      box.classList.remove("active");
+      selectedRoles=selectedRoles.filter(r=>r!==box.textContent);
+    }else{
+      if(selectedRoles.length<roleLimit){
+        box.classList.add("active");
+        selectedRoles.push(box.textContent);
       }
-      startTimer(300);
     }
+    /* disable extras */
+    if(selectedRoles.length>=roleLimit){
+      roleBoxes.forEach(r=>{
+        if(!r.classList.contains("active"))r.classList.add("disabled");
+      });
+    }else{
+      roleBoxes.forEach(r=>r.classList.remove("disabled"));
+    }
+    status.textContent=`Selected ${selectedRoles.length}/${roleLimit} roles`;
+    if(selectedRoles.length===roleLimit){
+      startBtn.style.display="inline-block";
+    }else{
+      startBtn.style.display="none";
+    }
+  });
+});
 
-    function startTimer(seconds) {
-      let remaining = seconds;
-      const interval = setInterval(() => {
-        const mins = Math.floor(remaining / 60);
-        const secs = remaining % 60;
-        timerDisplay.innerText = `⏱️ ${mins}:${secs.toString().padStart(2, '0')}`;
-        remaining--;
-        if (remaining < 0) {
-          clearInterval(interval);
-          timerDisplay.innerText = "🕒 Time's up!";
-        }
-      }, 1000);
-    }
-  </script>
+/* Narration + timer */
+const narrationSteps=[
+  "Billy wakes up and looks at one player’s card...",
+  "Mind Flayer and Mr. Whatsit wake up and look for Vecna...",
+  "Vecna wakes up. All players extend hands. Vecna taps one hand.",
+  "V extends her hand. Vecna and Mind Flayer wake up.",
+  "Demogorgon wakes up. Vecna and Mind Flayer stick their thumbs out.",
+  "Eleven wakes up. Eleven taps one hand.",
+  "Mike wakes up. Eleven puts her thumb up.",
+  "Nancy and Jonathan wake up and look at each other.",
+  "Will wakes up and performs his chosen action.",
+  "Hopper wakes up and reveals one player’s card.",
+  "Dustin wakes up and flips one center card face-up.",
+  "Max wakes up and switches two players’ cards.",
+  "Steve wakes up and swaps with another player.",
+  "Joyce wakes up and checks her own card.",
+  "Everyone wakes up. The night is over!"
+];
+const narrationBox=document.getElementById("narration-box");
+const timerDisplay=document.getElementById("timer");
+
+startBtn.addEventListener("click",startNarration);
+
+async function startNarration(){
+  narrationBox.innerText="";
+  timerDisplay.innerText="";
+  for(const step of narrationSteps){
+    narrationBox.innerText=step;
+    await new Promise(r=>setTimeout(r,3500));
+  }
+  startTimer(300);
+}
+
+function startTimer(s){
+  let t=s;
+  const interval=setInterval(()=>{
+    const m=Math.floor(t/60),sec=t%60;
+    timerDisplay.innerText=`⏱️ ${m}:${sec.toString().padStart(2,"0")}`;
+    t--;
+    if(t<0){clearInterval(interval);timerDisplay.innerText="🕒 Time's up!";}
+  },1000);
+}
+</script>
 </body>
 </html>
