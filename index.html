@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One Night: Stranger Things</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      color: #ff2a2a;
+      font-family: 'Cinzel Decorative', serif;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    nav {
+      background: #111;
+      border-bottom: 2px solid #ff2a2a;
+    }
+
+    main.container {
+      padding-top: 2rem;
+    }
+
+    h1, h2 {
+      text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+      letter-spacing: 2px;
+    }
+
+    select, button {
+      background: #111;
+      color: #ff2a2a;
+      border: 1px solid #ff2a2a;
+    }
+
+    #narration-box {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      white-space: pre-line;
+      min-height: 120px;
+    }
+
+    #timer {
+      font-size: 2rem;
+      margin-top: 1rem;
+      color: #ff5555;
+      text-shadow: 0 0 15px #ff0000;
+    }
+
+    footer {
+      margin-top: 3rem;
+      border-top: 1px solid #ff2a2a;
+      padding-top: 1rem;
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="container-fluid">
+    <ul><li><strong>One Night: Stranger Things</strong></li></ul>
+    <ul>
+      <li><a href="#">Rules</a></li>
+      <li><a href="#">Start Game</a></li>
+      <li><a href="#" role="button">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <div class="grid">
+      <section>
+        <hgroup>
+          <h2>Choose Roles</h2>
+          <h3>Select the roles for this round</h3>
+        </hgroup>
+
+        <select id="roles" multiple size="8">
+          <option>Will</option>
+          <option>Eleven</option>
+          <option>Mike</option>
+          <option>Dustin</option>
+          <option>Steve</option>
+          <option>Lucas</option>
+          <option>Nancy</option>
+          <option>Jonathan</option>
+          <option>Joyce</option>
+          <option>Hopper</option>
+          <option>Max</option>
+          <option>V</option>
+          <option>Billy</option>
+          <option>Bob</option>
+          <option>Kali</option>
+          <option>Eddie</option>
+          <option>Vecna</option>
+          <option>Mind Flayer</option>
+          <option>Mr. Whatsit</option>
+          <option>Demogorgon</option>
+        </select>
+
+        <button id="start-night">Start Night Narration</button>
+        <div id="narration-box"></div>
+        <div id="timer"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="container">
+    <small><a href="#">Created by You</a> • <a href="#">Inspired by Stranger Things</a></small>
+  </footer>
+
+  <script>
+    const narrationSteps = [
+      "Billy wakes up and looks at one player’s card...",
+      "Mind Flayer and Mr.Whatsit wake up and look for Vecna...",
+      "Vecna wakes up. All players extend hands. Vecna taps one hand.",
+      "V extends her hand. Vecna and Mind Flayer wake up.",
+      "Demogorgon wakes up. Vecna and Mind Flayer stick their thumbs out.",
+      "Eleven wakes up. Eleven taps one hand.",
+      "Mike wakes up. Eleven puts her thumb up.",
+      "Nancy and Jonathan wake up and look at each other.",
+      "Will wakes up and performs his chosen action.",
+      "Hopper wakes up and reveals one player’s card.",
+      "Dustin wakes up and flips one center card face-up.",
+      "Max wakes up and switches two players’ cards.",
+      "Steve wakes up and swaps with another player.",
+      "Joyce wakes up and checks her own card.",
+      "Everyone wakes up. The night is over!"
+    ];
+
+    const narrationBox = document.getElementById('narration-box');
+    const timerDisplay = document.getElementById('timer');
+    const startButton = document.getElementById('start-night');
+
+    startButton.addEventListener('click', startNarration);
+
+    async function startNarration() {
+      narrationBox.innerText = "";
+      timerDisplay.innerText = "";
+      for (let step of narrationSteps) {
+        narrationBox.innerText = step;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(new SpeechSynthesisUtterance(step));
+        await new Promise(r => setTimeout(r, 4000)); // Wait 4s between steps
+      }
+      startTimer(300);
+    }
+
+    function startTimer(seconds) {
+      let remaining = seconds;
+      const interval = setInterval(() => {
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        timerDisplay.innerText = `⏱️ ${mins}:${secs.toString().padStart(2, '0')}`;
+        remaining--;
+        if (remaining < 0) {
+          clearInterval(interval);
+          timerDisplay.innerText = "🕒 Time's up!";
+          speechSynthesis.speak(new SpeechSynthesisUtterance("Time's up!"));
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
