@@ -224,6 +224,40 @@ const timerDisplay=document.getElementById("timer");
 
 startBtn.addEventListener("click",startNarration);
 
+  /* ---- Narration voice setup ---- */
+function speakLine(text) {
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 0.9;   // slower = more dramatic
+  utter.pitch = 0.8;  // slightly deeper
+  utter.volume = 1;   // full volume
+  // choose a more "host-like" voice if available
+  const voices = speechSynthesis.getVoices();
+  const preferred = voices.find(v =>
+    v.name.toLowerCase().includes("male") ||
+    v.name.toLowerCase().includes("en-us") ||
+    v.name.toLowerCase().includes("daniel")
+  );
+  if (preferred) utter.voice = preferred;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utter);
+  return new Promise(r => {
+    utter.onend = () => setTimeout(r, 800); // small pause after line
+  });
+}
+
+/* ---- Replace startNarration with voiced version ---- */
+async function startNarration() {
+  narrationBox.innerText = "";
+  timerDisplay.innerText = "";
+  for (const step of narrationSteps) {
+    narrationBox.innerText = step;
+    await speakLine(step);        // speak each line
+    await new Promise(r => setTimeout(r, 1200)); // dramatic pause
+  }
+  await speakLine("Everyone wakes up. The night is over!");
+  startTimer(300);
+}
+
 async function startNarration(){
   narrationBox.innerText="";
   timerDisplay.innerText="";
